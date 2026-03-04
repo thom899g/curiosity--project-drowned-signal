@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  drowned-signal-api:
+    build: .
+    container_name: drowned-signal-api
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/app/logs
+      - ./firebase-credentials.json:/app/firebase-credentials.json
+    restart: unless-stopped
+    networks:
+      - drowned-signal-network
+
+  redis-cache:
+    image: redis:7-alpine
+    container_name: drowned-signal-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    networks:
+      - drowned-signal-network
+
+networks:
+  drowned-signal-network:
+    driver: bridge
+
+volumes:
+  redis-data:
